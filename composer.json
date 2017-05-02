@@ -1,0 +1,24 @@
+{
+    "name": "javamon/jframe",
+    "description": "php framework",
+    "type": "framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "javamon",
+            "email": "javamon1174@gmail.com"
+        }
+    ],
+    "require": {
+        "filp/whoops": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Javamon\\Jframe\\":"src/",
+            "Javamon\\Jframe\\Core\\":"src/application/core",
+            "Javamon\\Jframe\\Processor\\":"src/application/",
+            "Javamon\\Jframe\\Model\\":"src/application/model",
+            "Javamon\\Jframe\\View\\":"src/application/view"
+        }
+    }
+}
