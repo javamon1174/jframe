@@ -55,9 +55,10 @@ class Loader
         return new $class_name();
     }
 
-    public function view($class = null)
+    public function view()
     {
-        return "view instance";
+        $class_name = "\\Javamon\\Jframe\\Core\\View";
+        return new $class_name();
     }
 
 }

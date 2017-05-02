@@ -8,14 +8,17 @@ use \Javamon\Jframe\Core\ORM as ORM;
 
 class Processor
 {
+    protected $config;
     protected $load;
     protected $database;
-    protected $config;
+    protected $view;
 
     public function __construct()
     {
         empty($this->config) ? $this->config = (new Config())->configure() : false;
         empty($this->load) ? $this->load = new loader() : false;
         empty($this->database) ? $this->database = $this->load->model() : false;
+        empty($this->view) ? $this->view = $this->load->view() : false;
+
     }
 }

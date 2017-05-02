@@ -31,8 +31,6 @@ class ORM {
 
         empty(static::$table) ? static::$table = strtolower(array_pop($static_class).'s') : false;
         empty(static::$ORM_object) ? static::$ORM_object = new $class() : false;
-        // static::$table = strtolower(array_pop($static_class).'s');
-        // static::$ORM_object = new $class();
 
         return static::$ORM_object;
     }

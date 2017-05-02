@@ -9,7 +9,7 @@ class Config
         "host"=> "localhost",
         "db"=> "jframe",
         "user"=> "jframe",
-        "password"=> "jframe",
+        "password"=> "",
         "port"=> "3306",
     ];
 
@@ -32,5 +32,7 @@ class Config
     private function constDefine()
     {
         defined('DEVELOPMENT_ENVIRONMENT') or define('DEVELOPMENT_ENVIRONMENT', true);
+        defined('ROOT') or define('ROOT', '/home/vagrant/jframe');
+
     }
 }
