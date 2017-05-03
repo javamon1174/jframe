@@ -1,7 +1,7 @@
 <?php
-namespace Javamon\Jframe;
+namespace Javamon\Jframe\Core;
 
-use \Javamon\Jframe\Core\Loader as Loader;
+// use \Javamon\Jframe\Core\Loader as Loader;
 
 class Route {
 

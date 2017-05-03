@@ -1,7 +1,7 @@
 <?php
 namespace Javamon\Jframe;
 
-use Javamon\Jframe\Route as Route;
+use \Javamon\Jframe\Core\Route as Route;
 
 require_once __DIR__.'/vendor/autoload.php';
 

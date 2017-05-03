@@ -11,10 +11,10 @@ class Sample extends Processor
     public function Sample($arg)
     {
         // use model sample code
-        // $this->database->update('user', 'user_name','power','user_index', 5);
-        // $this->database->delete('user', 'user_index', 5);
-        // $result = $this->database->select('user', '*','user_index', 6);
-        // $result = $this->database->selectAll('user', 'user_name');
+        // $this->model->update('user', 'user_name','power','user_index', 5);
+        // $this->model->delete('user', 'user_index', 5);
+        // $result = $this->model->select('user', '*','user_index', 6);
+        // $result = $this->model->selectAll('user', 'user_name');
 
         $result = User::ORM()->selectAll();
         // User::ORM()->update('user_name','powerfull','user_index', 6);

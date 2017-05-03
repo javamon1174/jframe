@@ -15,12 +15,11 @@ class Processor
     protected $view;
     protected $blade;
 
-
     public function __construct()
     {
         empty($this->config) ? $this->config = (new Config())->configure() : false;
         empty($this->load) ? $this->load = new loader() : false;
-        empty($this->database) ? $this->database = $this->load->model() : false;
+        empty($this->model) ? $this->database = $this->load->model() : false;
         empty($this->view) ? $this->view = $this->load->view() : false;
     }
 }
