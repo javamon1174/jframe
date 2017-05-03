@@ -1,8 +1,25 @@
 <?php
+/**
+ * Javamon's JFramework
+ *
+ * PHP 컴포저 기반 제이프레임워크
+ *
+ * Created on 2017. 5.
+ * @package      Javamon\Jframe
+ * @category     Index
+ * @license      http://opensource.org/licenses/MIT
+ * @author       javamon <javamon1174@gmail.com>
+ * @link         http://javamon.be/Jframe
+ * @link         https://github.com/javamon1174/jframe
+ * @version      0.0.1
+ */
 namespace Javamon\Jframe\Core;
 
 use \Javamon\Jframe\Core\Config as Config;
-//Eloquent ORM
+
+/**
+*  Eloquent ORM 클래스(모델 클래스와 동일) : ORM모델들의 부모 클래스 - 데이터베이스 커넥터, 기본 동작 쿼리 함수 내장
+*/
 class ORM {
 
     public static $table;
@@ -24,6 +41,11 @@ class ORM {
 
     }
 
+    /**
+     * ORM 기본 세팅 -> 현재 클래스와 데이터베이스의 테이블 이름 매핑 및 클래스의 객체 리턴
+     * @access public
+     * @return Object static::$ORM_object : ORM 클래스 객체
+     */
     public static function ORM()
     {
         $class = '\\'.get_called_class();
