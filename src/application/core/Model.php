@@ -54,6 +54,7 @@ class Model
                                         $this->config["database"]["user"],
                                         $this->config["database"]["password"]
                                     );
+        $this->db_connect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
     /**
@@ -67,9 +68,19 @@ class Model
                              $sql = ""
                          )
     {
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "Query ERROR");
-        return $prepared_sql;
+        try {
+            $this->db_connect->beginTransaction();
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "Query ERROR");
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -85,16 +96,20 @@ class Model
                                 $select = '*'
                             )
     {
+
         try {
             $this->db_connect->beginTransaction();
 
             $this->abort_error(empty($table), "No arguments were passed to selectAll it.");
             $sql = "SELECT {$select} FROM {$table};";
+
             $prepared_sql = $this->db_connect->prepare($sql);
+
             $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
+            $this->db_connect->commit();
 
             return $prepared_sql;
-            
+
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
             return false;
@@ -118,13 +133,23 @@ class Model
                                 $where_value = null
                              )
     {
-        $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
+        try {
+            $this->db_connect->beginTransaction();
 
-        $sql = "SELECT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+            $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
-        return $prepared_sql;
+            $sql = "SELECT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     public function update
@@ -136,14 +161,24 @@ class Model
                                 $where_value = ''
                             )
     {
-        $this->abort_error(empty($where_colmn || $where_value), 'No arguments were passed to update it.');
+        try {
+            $this->db_connect->beginTransaction();
 
-        $sql = "UPDATE `{$table}` SET `{$update_colmn}` = '{$update_value}'
-                WHERE `{$table}`.`{$where_colmn}` = {$where_value};";
+            $this->abort_error(empty($where_colmn || $where_value), 'No arguments were passed to update it.');
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "UPDATE ERORROR - Check Query.");
-        return $prepared_sql;
+            $sql = "UPDATE `{$table}` SET `{$update_colmn}` = '{$update_value}'
+                    WHERE `{$table}`.`{$where_colmn}` = {$where_value};";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "UPDATE ERORROR - Check Query.");
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     public function delete
@@ -153,11 +188,24 @@ class Model
                             $where_value = ''
                           )
     {
-        $sql = "DELETE FROM `{$table}` WHERE `{$table}`.`{$where_colmn}` = '{$where_value}'";
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "DELETE ERORROR - Check Query.");
-        return $prepared_sql;
+        try {
+            $this->db_connect->beginTransaction();
+
+            $this->abort_error(empty($where_colmn || $where_value), 'No arguments were passed to update it.');
+
+            $sql = "DELETE FROM `{$table}` WHERE `{$table}`.`{$where_colmn}` = '{$where_value}'";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "DELETE ERORROR - Check Query.");
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     public function distinct
@@ -168,13 +216,23 @@ class Model
                                 $where_value = null
                              )
     {
-        $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
+        try {
+            $this->db_connect->beginTransaction();
 
-        $sql = "SELECT DISTINCT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+            $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT DISTINCT ERORROR - Check Query.");
-        return $prepared_sql;
+            $sql = "SELECT DISTINCT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT DISTINCT ERORROR - Check Query.");
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     public function join() { }

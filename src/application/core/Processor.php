@@ -42,7 +42,7 @@ class Processor
      * @access protected
      * @var Object $database : 모델 객체
      */
-    protected $database;
+    protected $model;
 
     /**
      * @access protected
@@ -54,7 +54,7 @@ class Processor
     {
         empty($this->config) ? $this->config = (new Config())->configure() : false;
         empty($this->load) ? $this->load = new loader() : false;
-        empty($this->model) ? $this->database = $this->load->model() : false;
+        empty($this->model) ? $this->model = $this->load->model() : false;
         empty($this->view) ? $this->view = $this->load->view() : false;
     }
 }

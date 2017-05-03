@@ -33,7 +33,7 @@ class Sample extends Processor
         /**
          * 부모 클래스에서 선언된 객체들에 바로 접근하여 바로 사용가능합니다.
          */
-        $result = User::ORM()->selectAll();
+        $result = $this->model->selectAll('users');
 
         while($row=$result->fetch(\PDO::FETCH_OBJ)) {
         /*its getting data in line.And its an object*/
