@@ -30,17 +30,6 @@ class Sample extends Processor
      */
     public function Sample($arg)
     {
-        // use model sample code
-        // $this->model->update('user', 'user_name','power','user_index', 5);
-        // $this->model->delete('user', 'user_index', 5);
-        // $result = $this->model->select('user', '*','user_index', 6);
-        // $result = $this->model->selectAll('user', 'user_name');
-        //
-        // use orm model sample code
-        // User::ORM()->update('user_name','powerfull','user_index', 6);
-        // User::ORM()->delete('user_index', 6);
-        // $result = User::ORM()->select( '*','user_index', 6);
-
         /**
          * 부모 클래스에서 선언된 객체들에 바로 접근하여 바로 사용가능합니다.
          */
@@ -58,7 +47,7 @@ class Sample extends Processor
 
         $this->view->load($layout, $data);
     }
-    
+
     /** 샘플
      * 요청 URL : http://127.0.0.1/sample/userPicture
      */

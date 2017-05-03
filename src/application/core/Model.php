@@ -20,7 +20,10 @@ use \Javamon\Jframe\Core\Config as Config;
 /**
  *  모델 클래스 : 데이터베이스 커넥터, 기본 동작 쿼리 함수 내장
  */
-class Model {
+class Model
+{
+
+    protected $transactionCounter = 0;
 
     /**
      * @access private
@@ -82,13 +85,20 @@ class Model {
                                 $select = '*'
                             )
     {
-        $this->abort_error(empty($table), "No arguments were passed to selectAll it.");
-        $sql = "SELECT {$select} FROM {$table};";
+        try {
+            $this->db_connect->beginTransaction();
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
+            $this->abort_error(empty($table), "No arguments were passed to selectAll it.");
+            $sql = "SELECT {$select} FROM {$table};";
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
 
-        return $prepared_sql;
+            return $prepared_sql;
+            
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -192,5 +202,4 @@ class Model {
             return true;
         }
     }
-
 }

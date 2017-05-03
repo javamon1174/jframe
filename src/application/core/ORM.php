@@ -69,11 +69,19 @@ class ORM {
 
     public function selectAll ( $select = '*' )
     {
-        $sql = "SELECT {$select} FROM ".static::$table.";";
+        try {
+            $this->db_connect->beginTransaction();
 
-        $prepared_sql = $this->db_connect->prepare($sql);
-        $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
-        return $prepared_sql;
+            $sql = "SELECT {$select} FROM ".static::$table.";";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return false;
+        }
     }
 
     public function select
