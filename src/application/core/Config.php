@@ -9,7 +9,7 @@ class Config
         "host"=> "localhost",
         "db"=> "jframe",
         "user"=> "jframe",
-        "password"=> "",
+        "password"=> "1111",
         "port"=> "3306",
     ];
 

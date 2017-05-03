@@ -1,48 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-<body>
+    <div class="col-sm-9">
+          <h2>View 클래스 샘플 테이블</h2>
+          <p>해당 페이지는 뷰의 샘플 페이지입니다.</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>유저 번호</th>
+                <th>유저 이름</th>
+                <th>유저 별명</th>
+                <th>유저 회원번호</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                foreach ($user as $key => $value) {
+                    echo "<tr>";
+                    echo "<td>{$value->user_index}</td>";
+                    echo "<td>{$value->user_name}</td>";
+                    echo "<td>{$value->user_alias}</td>";
+                    echo "<td>{$value->user_password}</td>";
+                    echo "</tr>";
+                };
+              ?>
+            </tbody>
+          </table>
+    </div>
 
-<div class="container">
-  <h2>Basic Table</h2>
-  <h5>data start</h5>
-  <?php var_dump($view_data); ?>
-  <h5>data end</h5>
-  <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>John</td>
-        <td>Doe</td>
-        <td>john@example.com</td>
-      </tr>
-      <tr>
-        <td>Mary</td>
-        <td>Moe</td>
-        <td>mary@example.com</td>
-      </tr>
-      <tr>
-        <td>July</td>
-        <td>Dooley</td>
-        <td>july@example.com</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-</body>
-</html>

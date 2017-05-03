@@ -5,37 +5,40 @@ use \Javamon\Jframe\Core\Loader as Loader;
 
 class View
 {
-    private $data = array();
+    private $data = Array();
 
-    private $render = FALSE;
+    private $render = false;
 
-    public function load($view = null)
+    public function load(
+                            $views = Array(),
+                            $input_data = Array()
+                        )
     {
+        $this->data = $input_data;
 
-        try {
-            $file = ROOT . '/src/application/view/' . strtolower($view) . '.php';
+        foreach ($views as $key => $view)
+        {
+            
+            try
+            {
+                $file = ROOT . '/src/application/view/' . strtolower($view) . '.php';
 
-            if (file_exists($file)) {
-                $this->render = $file;
-            } else {
-                throw new customException('View : ' . $view . ' not found!');
+                if (file_exists($file))
+                {
+                    $this->render = $file;
+                }
+                else
+                {
+                    throw new customException('View : ' . $view . ' not found!');
+                }
             }
+            catch (customException $e)
+            {
+                echo $e->errorMessage();
+            }
+
+            extract($this->data, EXTR_PREFIX_SAME, "wddx");
+            include($this->render);
         }
-        catch (customException $e) {
-            echo $e->errorMessage();
-        }
     }
-
-    public function assign($input_data)
-    {
-        $this->data['view_data'] = $input_data;
-    }
-
-    public function __destruct()
-    {
-        extract($this->data);
-        include_once($this->render);
-    }
-
-    public function __construct() { }
 }

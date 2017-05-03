@@ -5,6 +5,7 @@ use \Javamon\Jframe\Core\Config as Config;
 use \Javamon\Jframe\Core\Loader as Loader;
 use \Javamon\Jframe\Core\Model as Model;
 use \Javamon\Jframe\Core\ORM as ORM;
+use Philo\Blade\Blade;
 
 class Processor
 {
@@ -12,6 +13,8 @@ class Processor
     protected $load;
     protected $database;
     protected $view;
+    protected $blade;
+
 
     public function __construct()
     {
@@ -19,6 +22,5 @@ class Processor
         empty($this->load) ? $this->load = new loader() : false;
         empty($this->database) ? $this->database = $this->load->model() : false;
         empty($this->view) ? $this->view = $this->load->view() : false;
-
     }
 }

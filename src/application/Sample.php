@@ -16,7 +16,6 @@ class Sample extends Processor
         // $result = $this->database->select('user', '*','user_index', 6);
         // $result = $this->database->selectAll('user', 'user_name');
 
-
         $result = User::ORM()->selectAll();
         // User::ORM()->update('user_name','powerfull','user_index', 6);
         // User::ORM()->delete('user_index', 6);
@@ -24,36 +23,29 @@ class Sample extends Processor
 
         while($row=$result->fetch(\PDO::FETCH_OBJ)) {
         /*its getting data in line.And its an object*/
-            $data[] = $row;
+            $data['user'][] = $row;
         }
 
-        $var_array = array("color" => "blue",
-                   "size"  => "medium",
-                   "shape" => "sphere");
+        //use view sample code
+        $layout[] = "header";
+        $layout[] = "table";
+        $layout[] = "footer";
 
-        // $view = new view();
-        $this->view->load("table");
-        $this->view->assign($data);
-
-        // $this->view->load("table");
-        // $this->view->assign('variablename', 'variable content');
-
-        // $this->view->assign($var_array);
-
+        $this->view->load($layout, $data);
     }
 
-    public function bare($arg)
+    public function userPicture()
     {
-        echo "sample/bare <hr />";
-        var_dump($arg);
+        $result = User::ORM()->selectAll();
+
+        while($row=$result->fetch(\PDO::FETCH_OBJ)) {
+            $data['user'][] = $row;
+        }
+
+        $layout[] = "header";
+        $layout[] = "picture";
+        $layout[] = "footer";
+
+        $this->view->load($layout, $data);
     }
-
-    public function layer($arg)
-    {
-        echo "sample/layer <hr />";
-        var_dump($arg);
-    }
-
-
-
 }
