@@ -33,6 +33,6 @@ class Config
     {
         defined('DEVELOPMENT_ENVIRONMENT') or define('DEVELOPMENT_ENVIRONMENT', true);
         defined('ROOT') or define('ROOT', '/home/vagrant/jframe');
-
+        defined('HTTP_HOST') or define('HTTP_HOST', 'http://localhost:7777/');
     }
 }

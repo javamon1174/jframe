@@ -49,7 +49,7 @@
     <div class="col-sm-3 sidenav">
       <h4>Jframe Veiw sample Layout</h4>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="/">Home</a></li>
-        <li><a href="/sample/userpicture">User picture</a></li>
+        <li><a href="<?=HTTP_HOST?>">Home</a></li>
+        <li><a href="<?=HTTP_HOST?>sample/userpicture">User picture</a></li>
       </ul><br>
     </div>
