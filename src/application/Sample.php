@@ -47,6 +47,12 @@ class Sample extends Processor
 
         $this->view->load($layout, $data);
     }
+    
+    public function test($arg)
+    {
+        echo 'sample/test function<br />';
+        var_dump($arg);
+    }
 
     /** 샘플
      * 요청 URL : http://127.0.0.1/sample/userPicture

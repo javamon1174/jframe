@@ -30,15 +30,23 @@ class ORM {
     {
         empty($this->config) ? $this->config = (new Config())->configure() : false;
 
+        $options = array(
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET GLOBAL max_allowed_packet=16777216;',
+            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            // PDO::ATTR_EMULATE_PREPARES   => false,
+            //Please add here mysql setting
+        );
+
         $this->db_connect = new \PDO(
                                         'mysql:host='.$this->config["database"]["host"].';
                                         port='.$this->config["database"]["port"].';
                                         dbname='.$this->config["database"]["db"].';
                                         charset=utf8mb4',
                                         $this->config["database"]["user"],
-                                        $this->config["database"]["password"]
+                                        $this->config["database"]["password"], $options
                                     );
-
     }
 
     /**
@@ -51,8 +59,8 @@ class ORM {
         $class = '\\'.get_called_class();
         $static_class = explode('\\', get_called_class());
 
-        empty(static::$table) ? static::$table = strtolower(array_pop($static_class).'s') : false;
-        empty(static::$ORM_object) ? static::$ORM_object = new $class() : false;
+        static::$table = strtolower(array_pop($static_class).'s');
+        static::$ORM_object = new $class();
 
         return static::$ORM_object;
     }
@@ -202,7 +210,7 @@ class ORM {
         }
     }
 
-    private function abort_error
+    protected function abort_error
                                 (
                                     $boolean = true,
                                     $msg = "Check Query"

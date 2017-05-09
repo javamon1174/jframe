@@ -43,7 +43,6 @@ sample link : [demo](http://javamon.be/jframe)
 - 다양한 공격(인젝션 등)에 대응할 수 있는 보안.
 
 ### 제이프레임워크 사용법
-URL ROUTE는 CodeIgniter와 동일합니다. 세그먼트로, http://127.0.0.1/class/function/data 입니다.
 ##### 샘플 컨트롤러(프로세서) 기본 구조
 ```
     namespace Javamon\Jframe\Processor;
@@ -52,6 +51,23 @@ URL ROUTE는 CodeIgniter와 동일합니다. 세그먼트로, http://127.0.0.1/c
     public function Sample($arg) {}
     }
 ```
+
+##### Route 규칙 예제
+URL ROUTE는 CodeIgniter와 동일합니다.
+세그먼트이며, 기본 규칙은 example.com/class/function/id/ 입니다.
+```
+    $route['product/(:num)'] = 'catalog/product_lookup';
+    $route['product/(:any)'] = 'catalog/product_lookup';
+```
+위와 같은 규칙은 아래 주소로 매핑됩니다.
+```
+    example.com/product/1/
+    .
+    .
+    example.com/product/4/
+    example.com/product/sample/
+```
+코드이그나이터 라우트 규칙 : [Route 규칙 정의](http://www.ciboard.co.kr/user_guide/kr/general/routing.html)
 
 ##### 모델(쿼리빌더) 사용 예제
 ```

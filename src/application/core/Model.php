@@ -42,20 +42,28 @@ class Model
      * @access public
      * @return Object $this->db_connect : 데이터베이스 커넥터 저장
      */
-    public function __construct()
-    {
-        empty($this->config) ? $this->config = (new Config())->configure() : false;
+     public function __construct()
+     {
+         empty($this->config) ? $this->config = (new Config())->configure() : false;
 
-        $this->db_connect = new \PDO(
-                                        'mysql:host='.$this->config["database"]["host"].';
-                                        port='.$this->config["database"]["port"].';
-                                        dbname='.$this->config["database"]["db"].';
-                                        charset=utf8mb4',
-                                        $this->config["database"]["user"],
-                                        $this->config["database"]["password"]
-                                    );
-        $this->db_connect->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    }
+         $options = array(
+             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET GLOBAL max_allowed_packet=16777216;',
+             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+             // PDO::ATTR_EMULATE_PREPARES   => false,
+             //Please add here mysql setting
+         );
+
+         $this->db_connect = new \PDO(
+                                         'mysql:host='.$this->config["database"]["host"].';
+                                         port='.$this->config["database"]["port"].';
+                                         dbname='.$this->config["database"]["db"].';
+                                         charset=utf8mb4',
+                                         $this->config["database"]["user"],
+                                         $this->config["database"]["password"], $options
+                                     );
+     }
 
     /**
      * 내장 기능 함수 : 문자열 쿼리 실행
@@ -239,12 +247,12 @@ class Model
 
     /**
      * 인수&쿼리 에러 발생 함수
-     * @access public
+     * @access protected
      * @param String $boolean : 인수 전달 여부
      * @param String $msg : 에러 메세지
      * @return Void : 에러 발생했는지 결과
      */
-    private function abort_error
+    protected function abort_error
                                 (
                                     $boolean = true,
                                     $msg = "Check Query"

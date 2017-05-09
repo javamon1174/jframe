@@ -15,56 +15,20 @@
  */
 namespace Javamon\Jframe\Core;
 
-use \Javamon\Jframe\Core\Config as Config;
-
 /**
  *  프레임워크간의 관계 정의 및 객체생성 클래스
  */
 class Loader
 {
     /**
-     * @access private
-     * @var String $class : 현재 클래스
-     */
-    private $class;
-    /**
-     * @access private
-     * @var String $function : 현재 함수
-     */
-    private $function;
-
-    /**
      * 기본 세팅값 대입 및 요청 된 클래스 및 함수 실행
      * @access public
      * @return Object $instance : 요청된 객체
      */
-    public function init($arg = Array())
+    public function init($class_name, $method, $data)
     {
-        empty($this->config) ? $this->config = (new Config())->configure() : false;
-
-        //default controller mapping
-        empty($arg[0]) ? $arg[0]  = $this->config["default"]["controller"] : false;
-        empty($arg[1]) ? $arg[1]  = $this->config["default"]["controller"] : false;
-
-        $class_name = "\\Javamon\\Jframe\\Processor\\".ucfirst($this->config["default"]["controller"]);
-
         $instance = new $class_name();
-        method_exists($instance,ucfirst($arg[0])) ? $construct =  true : $construct =  false ;
-
-        if ($construct)
-        {
-            (!empty($arg[1])) ? $function_name = $arg[1] : $function_name = $arg[0];
-
-            //remove class name and function name from arguments
-            array_shift($arg);
-            array_shift($arg);
-
-            return $instance->$function_name($arg);
-        }
-        else
-        {
-            return trigger_error("The defined function can not be found : ".ucfirst($arg[0])."()", E_USER_ERROR);
-        }
+        return $instance->$method($data);
     }
 
     /**
