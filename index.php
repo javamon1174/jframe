@@ -19,21 +19,7 @@ use \Javamon\Jframe\Core\Route as Route;
 
 require_once __DIR__.'/vendor/autoload.php';
 
-/**
- * 개발모드 php ini 임시 세팅
- * For Develop ini set.
- */
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
-ini_set('memory_limit','512M');
-
-/**
- * 컴포저 라이브러리 'Whoops' 실행
- * Excute Whoops php debugger in Composer.
- */
-$whoops = new \Whoops\Run;
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-$whoops->register();
+//Please set the basic environment. => application/core/Config.php
 
 /**
  * 제이프레임워크 라우트로 HTTP 요청 전달
