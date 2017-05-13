@@ -28,8 +28,8 @@ class Route
     //사용자 라우트 규칙 정의
     static public function route($request)
     {
-        $route['default'] = 'sample/test';
-
+        // $route['default'] = 'sample/test';
+        $route['default'] = 'sample/sample';
         $route['main'] = 'sample/sample';
         $route['userpicture'] = 'sample/userpicture';
 
@@ -46,12 +46,16 @@ class Route
     * Matches any routes that may exist in the route rules.
     * against the URI to determine if the class/method need to be remapped.
     *
-    * @return	void
+    * @param Array $request : 요청받은 페이지
+    * @param Array $routes : 사용자 정의 라우트 규칙 / custom route rules
+    * @return String $routes["class"] : 클래스 이름
+    * @return String $routes["method"] : 함수 이름
+    * @return Array $request : http-get 요청받은 데이터
     */
     static public function routing($request = array(), $routes = array())
     {
         $uri = URI;
-        $maaping = true;
+        $mapping = true; // flag mapping
 
         // 사용자 정의 라우트 규칙 반복문 실행
         foreach ($routes as $key => $val)
@@ -77,7 +81,7 @@ class Route
             if (preg_match('#^'.$key.'$#', $uri, $matches))
             {
 
-                // Are we using callbacks to process back-references?
+                // 기본 라우트 역 참조 및 콜백 체크
                 if ( ! is_string($val) && is_callable($val))
                 {
                     // 배열 내 원래 문자열 값 제거
@@ -85,31 +89,28 @@ class Route
                     // 함수 확인
                     $val = call_user_func_array($val, $matches);
                 }
-                // 기본 라우트 역 참조 체크
                 elseif (strpos($val, '$') !== FALSE && strpos($key, '(') !== FALSE)
                 {
                     $val = preg_replace('#^'.$key.'$#', $val, $uri);
-
                 }
 
                 $_temp = explode('/', $val);
 
-                (empty($_temp[0])) ? false : $routes['class'] = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
-                (empty($_temp[1])) ? false : $routes['method'] = ucfirst($_temp[1]);
-                $maaping = false;
-
+                (empty($_temp[0])) ? null : $routes['class'] = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
+                (empty($_temp[1])) ? null : $routes['method'] = ucfirst($_temp[1]);
+                $mapping = false;
             }
             // default 규칙 적용
             elseif ($key === "default" && empty($uri))
             {
                 $_temp = explode('/', $val);
 
-                (empty($_temp[0])) ? false : $routes['class'] = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
-                (empty($_temp[1])) ? false : $routes['method'] = ucfirst($_temp[1]);
-                $maaping = false;
+                (empty($_temp[0])) ? null : $routes['class'] = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
+                (empty($_temp[1])) ? null : $routes['method'] = ucfirst($_temp[1]);
+                $mapping = false;
             }
             //조건에 맞지 않을 때, 내장 라우트 규칙 실행
-            elseif ($maaping)
+            elseif ($mapping)
             {
                 $routes['class'] = null;
                 $routes['method'] = null;
@@ -157,13 +158,13 @@ class Route
 
     static public function getRequest()
     {
-        empty(static::$config) ? static::$config = (new Config())->configure() : false;
+        empty(static::$config) ? static::$config = (new Config())->configure() : null;
 
         $segment = filter_input(INPUT_GET, "url");
 
         // 마지막 문자열 체크 후 '/' 일때 제거 로직
         $string_last =  ( substr($segment, -1) );
-        ($string_last === '/') ? $segment = substr($segment , 0, -1) : false;
+        ($string_last === '/') ? $segment = substr($segment , 0, -1) : null;
 
         defined('NAMESPACE') or define('NAMESPACE', '\\Javamon\\Jframe\\Processor\\');
         defined('URI') or define('URI', $segment);

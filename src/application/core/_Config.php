@@ -15,7 +15,9 @@
  */
 namespace Javamon\Jframe\Core;
 
-/** filename = Config.php
+/**
+ *  Please rename the file.
+ *  filename = Config.php
  *  프레임워크 구동을 위한 환경설정 코어클래스
  */
 class Config

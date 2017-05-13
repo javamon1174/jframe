@@ -18,7 +18,8 @@ namespace Javamon\Jframe\Core;
 use \Javamon\Jframe\Core\Config as Config;
 
 /**
- *  모델 클래스 : 데이터베이스 커넥터, 기본 동작 쿼리 함수 내장
+ *  역할 : 쿼리 빌더
+ *  모델 클래스 : 데이터베이스 커넥트 및 커넥터 저장/관리, 기본 동작 쿼리 함수 내장
  */
 class Model
 {
@@ -38,21 +39,21 @@ class Model
     private $config = Array();
 
     /**
-     * 데이터베이스 커넥터 클래스 변수에 저장
+     * 데이터베이스 커넥트 및 커넥터 클래스 변수에 저장
      * @access public
      * @return Object $this->db_connect : 데이터베이스 커넥터 저장
      */
      public function __construct()
      {
-         empty($this->config) ? $this->config = (new Config())->configure() : false;
+         empty($this->config) ? $this->config = (new Config())->configure() : null;
 
+         //PDO 기본 세팅
          $options = array(
              \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
              \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET GLOBAL max_allowed_packet=16777216;',
              \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC, //쿼리 실행 후 리턴 데이터 타입
              // PDO::ATTR_EMULATE_PREPARES   => false,
-             //Please add here mysql setting
          );
 
          $this->db_connect = new \PDO(
@@ -250,7 +251,6 @@ class Model
      * @access protected
      * @param String $boolean : 인수 전달 여부
      * @param String $msg : 에러 메세지
-     * @return Void : 에러 발생했는지 결과
      */
     protected function abort_error
                                 (

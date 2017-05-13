@@ -18,17 +18,37 @@ namespace Javamon\Jframe\Core;
 use \Javamon\Jframe\Core\Config as Config;
 
 /**
+*  역할 : ORM
 *  Eloquent ORM 클래스(모델 클래스와 동일) : ORM모델들의 부모 클래스 - 데이터베이스 커넥터, 기본 동작 쿼리 함수 내장
 */
 class ORM {
 
+    /**
+     * @access public
+     * @var String $table : database table 이름
+     */
     public static $table;
+
+    /**
+     * @access public
+     * @var String $ORM_object : ORM 인스턴스
+     */
     public static $ORM_object;
+
+    /**
+     * @access private
+     * @var String $config : Config 클래스의 내장 데이터
+     */
     private $config;
 
+    /**
+     * 데이터베이스 커넥트 및 커넥터 클래스 변수에 저장
+     * @access public
+     * @return Object $this->db_connect : 데이터베이스 커넥터 저장
+     */
     public function __construct()
     {
-        empty($this->config) ? $this->config = (new Config())->configure() : false;
+        empty($this->config) ? $this->config = (new Config())->configure() : null;
 
         $options = array(
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
@@ -36,7 +56,6 @@ class ORM {
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             // PDO::ATTR_EMULATE_PREPARES   => false,
-            //Please add here mysql setting
         );
 
         $this->db_connect = new \PDO(

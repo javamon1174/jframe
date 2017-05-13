@@ -52,9 +52,9 @@ class Processor
 
     public function __construct()
     {
-        empty($this->config) ? $this->config = (new Config())->configure() : false;
-        empty($this->load) ? $this->load = new loader() : false;
-        empty($this->model) ? $this->model = $this->load->model() : false;
-        empty($this->view) ? $this->view = $this->load->view() : false;
+        empty($this->config) ? $this->config = (new Config())->configure() : null;
+        empty($this->load) ? $this->load = new loader() : null;
+        empty($this->model) ? $this->model = $this->load->model() : null;
+        empty($this->view) ? $this->view = $this->load->view() : null;
     }
 }

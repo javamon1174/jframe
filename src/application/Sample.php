@@ -19,7 +19,7 @@ use \Javamon\Jframe\Core\Processor as Processor;
 use \Javamon\Jframe\Model\User as User;
 use \Javamon\Jframe\Core\ORM as ORM;
 
-/** 샘플
+/** 
  *  샘플 컨트롤러(프로세서) 클래스
  */
 class Sample extends Processor
@@ -47,7 +47,7 @@ class Sample extends Processor
 
         $this->view->load($layout, $data);
     }
-    
+
     public function test($arg)
     {
         echo 'sample/test function<br />';

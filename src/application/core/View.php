@@ -54,13 +54,14 @@ class View
                     throw new customException('View : ' . $view . ' not found!');
                 }
             }
+
             catch (customException $e)
             {
                 echo $e->errorMessage();
             }
             //연관 배열 선언
             extract($this->data, EXTR_PREFIX_SAME, "wddx");
-            
+
             //페이지 로드
             include($this->render);
         }
