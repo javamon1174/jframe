@@ -39,13 +39,22 @@ class Model
     private $config = Array();
 
     /**
+     * @access private
+     * @var Array $table : 선택된 테이블
+     */
+    private $table = "";
+
+    /**
      * 데이터베이스 커넥트 및 커넥터 클래스 변수에 저장
      * @access public
      * @return Object $this->db_connect : 데이터베이스 커넥터 저장
      */
      public function __construct()
      {
-         empty($this->config) ? $this->config = (new Config())->configure() : null;
+         if (empty($this->config))
+         {
+             $this->config = (new Config())->configure();
+         }
 
          //PDO 기본 세팅
          $options = array(
@@ -87,6 +96,7 @@ class Model
             return $prepared_sql;
 
         } catch (PDOException $e) {
+            //add log write
             $this->db_connect->rollBack();
             return false;
         }
@@ -101,7 +111,7 @@ class Model
      */
     public function selectAll
                             (
-                                $table = null,
+                                $table  = null,
                                 $select = '*'
                             )
     {
@@ -109,19 +119,18 @@ class Model
         try {
             $this->db_connect->beginTransaction();
 
-            $this->abort_error(empty($table), "No arguments were passed to selectAll it.");
-            $sql = "SELECT {$select} FROM {$table};";
+            $sql = "SELECT {$select} FROM `{$table}s`;";
 
             $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute();
 
-            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
             $this->db_connect->commit();
 
             return $prepared_sql;
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
-            return false;
+            return $this->abort_error(true , $e);
         }
     }
 
@@ -130,117 +139,221 @@ class Model
      * @access public
      * @param String $table : 데이터베이스 테이블
      * @param String $select : 조회 조건
-     * @param String $where_colmn : 조회 조건
+     * @param String $where_column : 조회 조건
      * @param String $where_value : 조회 조건 값
      * @return Array $prepared_sql : 쿼리 실행 결과(데이터)
      */
     public function select
                             (
-                                $table = '',
-                                $select = '*',
-                                $where_colmn = null,
-                                $where_value = null
+                                $table          = '',
+                                $select         = '*',
+                                $where_column   = null,
+                                $where_value    = null
                              )
     {
         try {
             $this->db_connect->beginTransaction();
 
-            $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
-
-            $sql = "SELECT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+            $sql = "SELECT {$select} FROM `{$table}s` WHERE `{$where_column}` = :value;";
 
             $prepared_sql = $this->db_connect->prepare($sql);
-            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT ERORROR - Check Query");
+
+            $prepared_sql->execute(array(
+                ":value" => $where_value,
+            ));
+
             $this->db_connect->commit();
 
             return $prepared_sql;
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
-            return false;
+            return $this->abort_error(true , $e);
+        }
+    }
+
+    public function multiInsert(
+                                    $table = "",
+                                    $column_arr = [],
+                                    $value_arr = []
+                                )
+    {
+        try {
+            //make query
+            $sql        = (String) "INSERT INTO `{$table}s` ";
+            $sql_column = (String) "";
+            $sql_value  = (String) "";
+
+            $this->db_connect->beginTransaction();
+
+            $sql .= "(";
+            foreach ($column_arr as $column => $value) {
+                $sql_column .= "`{$value}`, ";
+            }
+            $sql_column = substr($sql_column, 0, -2);
+
+            $sql .= $sql_column;
+            $sql .= ") VALUES ";
+
+            foreach ($value_arr as $column => $values) {
+                $sql_value .= "(";
+                foreach ($values as $key => $value) {
+                    $values_arr[] = $value;
+                    $sql_value .= "?,";
+                }
+                $sql_value = substr($sql_value, 0, -1);
+                $sql_value .= "),";
+            }
+            $sql_value = substr($sql_value, 0, -2);
+
+            $sql .= $sql_value;
+            $sql .= ");";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute($values_arr);
+
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return $this->abort_error(true , $e);
+        }
+    }
+
+    public function insert
+                            (
+                                $table         = '',
+                                $insert_data   = []
+                            )
+    {
+        try {
+            //make query
+            $sql        = (String) "INSERT INTO `{$table}s` ";
+            $sql_column = (String) "";
+            $sql_value  = (String) "";
+
+            $this->db_connect->beginTransaction();
+
+            $sql .= "(";
+
+            foreach ($insert_data as $column => $value) {
+                //makes key data
+                $key = ':'.$column;
+                $data[$key] = $value;
+
+                //makes sql selector for column
+                $sql_column .= "`{$column}`, ";
+
+                //makes for data binding to sql
+                $sql_value .= " {$key},";
+            }
+            $sql_column = substr($sql_column, 0, -2);
+            $sql_value  = substr($sql_value, 0, -1);
+
+            $sql .= $sql_column;
+            $sql .= ") VALUES (";
+            $sql .= $sql_value;
+            $sql .= ");";
+
+            $prepared_sql = $this->db_connect->prepare($sql);
+            $prepared_sql->execute($data);
+
+            $this->db_connect->commit();
+
+            return $prepared_sql;
+
+        } catch (PDOException $e) {
+            $this->db_connect->rollBack();
+            return $this->abort_error(true , $e);
         }
     }
 
     public function update
                             (
-                                $table = '',
-                                $update_colmn = '',
-                                $update_value = '',
-                                $where_colmn = '',
-                                $where_value = ''
+                                $table          = '',
+                                $update_colmn   = '',
+                                $update_value   = '',
+                                $where_column   = '',
+                                $where_value    = ''
                             )
     {
         try {
             $this->db_connect->beginTransaction();
 
-            $this->abort_error(empty($where_colmn || $where_value), 'No arguments were passed to update it.');
-
-            $sql = "UPDATE `{$table}` SET `{$update_colmn}` = '{$update_value}'
-                    WHERE `{$table}`.`{$where_colmn}` = {$where_value};";
+            $sql = "UPDATE `{$table}s` SET `{$update_colmn}` = :update_value
+                    WHERE `{$table}s`.`{$where_column}` = :where_value;";
 
             $prepared_sql = $this->db_connect->prepare($sql);
-            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "UPDATE ERORROR - Check Query.");
+            $prepared_sql->execute(array(
+                ":update_value" => $update_value,
+                ":where_value"  => $where_value,
+            ));
+
             $this->db_connect->commit();
 
             return $prepared_sql;
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
-            return false;
+            return $this->abort_error(true , $e);
         }
     }
 
     public function delete
                           (
-                            $table = '',
-                            $where_colmn = '',
-                            $where_value = ''
+                            $table          = '',
+                            $where_column   = '',
+                            $where_value    = ''
                           )
     {
 
         try {
             $this->db_connect->beginTransaction();
 
-            $this->abort_error(empty($where_colmn || $where_value), 'No arguments were passed to update it.');
-
-            $sql = "DELETE FROM `{$table}` WHERE `{$table}`.`{$where_colmn}` = '{$where_value}'";
+            $sql = "DELETE FROM `{$table}s` WHERE `{$table}`.`{$where_column}` = ':where_value'";
 
             $prepared_sql = $this->db_connect->prepare($sql);
-            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "DELETE ERORROR - Check Query.");
+            $prepared_sql->execute(array(
+                ":where_value" => $where_value,
+            ));
+
             $this->db_connect->commit();
 
             return $prepared_sql;
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
-            return false;
+            return $this->abort_error(true , $e);
         }
     }
 
     public function distinct
                             (
-                                $table = '',
-                                $select = '*',
-                                $where_colmn = null,
-                                $where_value = null
+                                $table          = '',
+                                $select         = '*',
+                                $where_column    = null,
+                                $where_value    = null
                              )
     {
         try {
             $this->db_connect->beginTransaction();
 
-            $this->abort_error(empty($where_colmn || $where_value), "No arguments were passed to select it.");
-
-            $sql = "SELECT DISTINCT {$select} FROM {$table} WHERE `{$table}`.`{$where_colmn}`='{$where_value}';";
+            $sql = "SELECT DISTINCT {$select} FROM `{$table}` WHERE `{$table}`.`{$where_column}`= :where_value;";
 
             $prepared_sql = $this->db_connect->prepare($sql);
-            $prepared_sql->execute() ? $prepared_sql : $this->abort_error(true , "SELECT DISTINCT ERORROR - Check Query.");
+            $prepared_sql->execute(array(
+                ":where_value" => $where_value,
+            ));
+
             $this->db_connect->commit();
 
             return $prepared_sql;
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
-            return false;
+            return $this->abort_error(true , $e);
         }
     }
 

@@ -19,7 +19,7 @@ use \Javamon\Jframe\Core\Processor as Processor;
 use \Javamon\Jframe\Model\User as User;
 use \Javamon\Jframe\Core\ORM as ORM;
 
-/** 
+/**
  *  샘플 컨트롤러(프로세서) 클래스
  */
 class Sample extends Processor
@@ -33,7 +33,7 @@ class Sample extends Processor
         /**
          * 부모 클래스에서 선언된 객체들에 바로 접근하여 바로 사용가능합니다.
          */
-        $result = $this->model->selectAll('users');
+        $result = $this->model->selectAll('user');
 
         while($row=$result->fetch(\PDO::FETCH_OBJ)) {
         /*its getting data in line.And its an object*/
@@ -61,9 +61,51 @@ class Sample extends Processor
     {
         $result = User::ORM()->selectAll();
 
-        while($row=$result->fetch(\PDO::FETCH_OBJ)) {
+        // $result = User::ORM()->insert(array(
+        //     "user_name" => "자바몬11",
+        //     "user_alias" => "javamon",
+        //     "user_password" => "1111",
+        //     "user_image" => null,
+        // ));
+
+        // $data = [
+        //     ["자바몬12", "javamon", "1111", null],
+        //     ["자바몬22", "javamon", "2223", null],
+        //     ["자바몬32", "javamon", "3333", null],
+        // ];
+        //
+        // $result = User::ORM()->multiInsert(array(
+        //     "user_name",
+        //     "user_alias",
+        //     "user_password",
+        //     "user_image",
+        // ), $data);
+
+        // $result = $this->model->insert('user', array(
+        //     "user_name" => "자바몬",
+        //     "user_alias" => "javamon",
+        //     "user_password" => "1111",
+        //     "user_image" => null,
+        // ));
+
+        // $data = [
+        //     ["자바몬1", "javamon", "1111", null],
+        //     ["자바몬2", "javamon", "2223", null],
+        //     ["자바몬3", "javamon", "3333", null],
+        // ];
+        //
+        // $result = $this->model->multiInsert("user", array(
+        //     "user_name",
+        //     "user_alias",
+        //     "user_password",
+        //     "user_image",
+        // ), $data);
+
+        while($row = $result->fetch(\PDO::FETCH_OBJ)) {
+
             $data['user'][] = $row;
         }
+
 
         $layout[] = "header";
         $layout[] = "picture";

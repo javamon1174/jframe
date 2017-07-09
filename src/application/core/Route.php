@@ -75,7 +75,10 @@ class Route
             }
 
             // 와일드 카드 문자열 정규식으로 대체
-            $key = str_replace(array(':any', ':num'), array('[^/]+', '[0-9]+'), $key);
+            $key = str_replace(
+                        array(':any', ':num'),
+                        array('[^/]+', '[0-9]+'),
+                    $key);
 
             //사용자 정의 라우트 규칙 실행 => 참고 코드이그나이터 라우트 _parse_routes();
             if (preg_match('#^'.$key.'$#', $uri, $matches))
@@ -96,11 +99,16 @@ class Route
 
                 $_temp = explode('/', $val);
 
-                (empty($_temp[0])) ? null : $routes['class'] = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
-                (empty($_temp[1])) ? null : $routes['method'] = ucfirst($_temp[1]);
+                (empty($_temp[0])) ? null : $routes['class']
+                    = '\Javamon\Jframe\Processor\\'.ucfirst($_temp[0]);
+
+                (empty($_temp[1])) ? null : $routes['method']
+                    = ucfirst($_temp[1]);
+
                 $mapping = false;
+
             }
-            // default 규칙 적용
+            // 정의된 규칙이 없다면 default 규칙 적용
             elseif ($key === "default" && empty($uri))
             {
                 $_temp = explode('/', $val);
