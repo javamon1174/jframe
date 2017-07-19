@@ -21,6 +21,23 @@ require_once __DIR__.'/vendor/autoload.php';
 
 //Please set the basic environment. => application/core/Config.php
 
+//  exception sample
+//  $email = "power@.com";
+//  try {
+//    //check if
+//    if(filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
+//      //throw exception if email is not valid
+//      throw new CustomException($email);
+//    }
+//  }
+//
+//  catch (customException $e) {
+//    //display custom message
+//    echo $e->errorMessage();
+//  }
+//
+// return $this->setupLib();
+
 /**
  * 제이프레임워크 라우트로 HTTP 요청 전달
  * Forwarding HTTP requests to the jframework route.
