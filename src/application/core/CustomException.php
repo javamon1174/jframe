@@ -13,11 +13,10 @@ class CustomException extends \Exception
     line          : {$this->getLine()}
 </div>
 DIV;
-
         //write web server log
-        error_log($msg);
-        error_log("{$this->getTraceAsString()}");
-        
+        // error_log($msg);
+        // error_log("{$this->getTraceAsString()}");
+
         return exit($msg);
     }
 }

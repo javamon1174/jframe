@@ -25,9 +25,9 @@ class Loader
      * @access public
      * @return Object $instance : 요청된 객체
      */
-    public function init($class_name, $method, $data)
+    public function init($class_name, $method, $data = [])
     {
-        $instance = new $class_name();
+        $instance = new $class_name($data);
         return $instance->$method($data);
     }
 

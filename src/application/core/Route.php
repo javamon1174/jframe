@@ -32,9 +32,13 @@ class Route
         $route['default'] = 'sample/sample';
         $route['main'] = 'sample/sample';
         $route['userpicture'] = 'sample/userpicture';
-
         $route['test/(:any)'] = 'sample/test/$1';
         $route['test/(:any)/(:any)'] = 'sample/test/$1/$2';
+
+        // api
+        $route['api'] = 'api/index';
+        $route['user'] = 'user/index';
+        $route['user/(:any)'] = 'user/index/$1';
 
         return static::routing($request, $route);
     }
@@ -80,7 +84,7 @@ class Route
                         array('[^/]+', '[0-9]+'),
                     $key);
 
-            //사용자 정의 라우트 규칙 실행 => 참고 코드이그나이터 라우트 _parse_routes();
+            //사용자 정의 라우트 규칙 실행 => 참고 코드이그나이터 라우트 _parse_routes()
             if (preg_match('#^'.$key.'$#', $uri, $matches))
             {
 

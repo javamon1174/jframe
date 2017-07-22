@@ -55,7 +55,7 @@ class ORM {
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET GLOBAL max_allowed_packet=16777216;',
             \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            // PDO::ATTR_EMULATE_PREPARES   => false,
+            // \PDO::ATTR_EMULATE_PREPARES   => false,
         );
 
         $this->db_connect = new \PDO(
@@ -164,7 +164,7 @@ class ORM {
 
             $this->db_connect->commit();
 
-            return $prepared_sql;
+            return $this->db_connect->lastInsertId();
 
         } catch (PDOException $e) {
             $this->db_connect->rollBack();
@@ -237,6 +237,7 @@ class ORM {
 
             $sql = "SELECT {$select} FROM {$table} WHERE `{$table}`.`{$where_column}` = :value;";
 
+
             $prepared_sql = $this->db_connect->prepare($sql);
 
             $prepared_sql->execute(array(
@@ -251,9 +252,7 @@ class ORM {
             $this->db_connect->rollBack();
             return $this->abort_error(true , $e);
         }
-
     }
-
 
     public function update (
                                 $update_colmn   = '',
