@@ -64,17 +64,34 @@ class Model
              \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC, //쿼리 실행 후 리턴 데이터 타입
              // PDO::ATTR_EMULATE_PREPARES   => false,
          );
-
-         $this->db_connect = new \PDO(
-                                         'mysql:host='.$this->config["database"]["host"].';
-                                         port='.$this->config["database"]["port"].';
-                                         dbname='.$this->config["database"]["db"].';
-                                         charset=utf8mb4',
-                                         $this->config["database"]["user"],
-                                         $this->config["database"]["password"], $options
-                                     );
+         
+         $this::getConnection()
+             
+//          $this->db_connect = new \PDO(
+//                                          'mysql:host='.$this->config["database"]["host"].';
+//                                          port='.$this->config["database"]["port"].';
+//                                          dbname='.$this->config["database"]["db"].';
+//                                          charset=utf8mb4',
+//                                          $this->config["database"]["user"],
+//                                          $this->config["database"]["password"], $options
+//                                      );
      }
-
+    
+     private static function getConnection()
+     {
+         if ( empty( $this->db_connect ) )
+         {
+              $this->db_connect = new \PDO(
+                                  'mysql:host='.$this->config["database"]["host"].';
+                                  port='.$this->config["database"]["port"].';
+                                  dbname='.$this->config["database"]["db"].';
+                                  charset=utf8mb4',
+                                  $this->config["database"]["user"],
+                                  $this->config["database"]["password"], $options
+              );
+         }
+     }
+    
     /**
      * 내장 기능 함수 : 문자열 쿼리 실행
      * @access public
